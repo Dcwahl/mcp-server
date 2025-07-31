@@ -1,0 +1,47 @@
+"""
+MCP Development Server - Local development tools for Claude
+"""
+
+from mcp.server.fastmcp import FastMCP
+from tools.io_utils import read_file_content, list_directory_contents, write_file_content, find_files_by_pattern
+from tools.git_utils import get_git_status, get_git_branch, get_git_log
+
+# Create an MCP server
+mcp = FastMCP("DevTools")
+
+# File Operations
+@mcp.tool()
+def read_file(file_path: str) -> str:
+    """Read the contents of a file"""
+    return read_file_content(file_path)
+
+@mcp.tool()
+def list_directory(directory_path: str = ".") -> str:
+    """List contents of a directory"""
+    return list_directory_contents(directory_path)
+
+@mcp.tool()
+def write_file(file_path: str, content: str) -> str:
+    """Write content to a file (use with caution)"""
+    return write_file_content(file_path, content)
+
+@mcp.tool()
+def find_files(pattern: str, directory: str = ".") -> str:
+    """Find files matching a pattern (e.g., '*.py', '*.js')"""
+    return find_files_by_pattern(pattern, directory)
+
+# Git Operations
+@mcp.tool()
+def git_status() -> str:
+    """Get git status of the current repository"""
+    return get_git_status()
+
+@mcp.tool()
+def git_branch() -> str:
+    """Get current git branch and list all branches"""
+    return get_git_branch()
+
+@mcp.tool()
+def git_log(limit: int = 10) -> str:
+    """Get recent git commit history"""
+    return get_git_log(limit)
