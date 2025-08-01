@@ -272,14 +272,11 @@ def clear_cache() -> str:
 # Print startup information
 def log_startup_info():
     """Log information about the enhanced server on startup"""
-    try:
-        registry_tools = registry.list_tools()
-        logger.info(f"MCP Development Server starting with {len(registry_tools)} registry tools")
-        
-        for tool in registry_tools:
-            logger.info(f"  - {tool.name} ({tool.category}, {tool.performance_cost} cost)")
-    except Exception as e:
-        logger.warning(f"Could not log registry info: {e}")
+    registry_tools = registry.list_tools()
+    logger.info(f"MCP Development Server starting with {len(registry_tools)} registry tools")
+    
+    for tool in registry_tools:
+        logger.info(f"  - {tool.name} ({tool.category}, {tool.performance_cost} cost)")
 
 # Call startup logging
 log_startup_info()
