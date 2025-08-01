@@ -38,6 +38,14 @@ git_status
 
 ## Common Tasks & Workflows
 
+## Development Workflow
+
+**Important**: When working on the tool registry redesign:
+- **Update CURRENT_OBJECTIVE.md** with progress and checkboxes
+- **Update project_status** to reflect current state
+- **Document major design decisions** and architectural choices
+- **Keep context files current** so new chat sessions have accurate info
+
 ### Adding New Features
 1. Create feature branch: `git_checkout('feature/name', create_new=True)`
 2. Make changes with `patch_file` (safer than `write_file`)

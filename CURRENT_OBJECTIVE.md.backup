@@ -75,20 +75,6 @@ We're planning a significant architectural improvement to move from our current 
 - Common workflows become more efficient
 - Better code understanding for complex projects
 
-## Development Workflow Guidelines
-
-**When Working on This Objective:**
-1. **Update progress** in this file as phases are completed
-2. **Update project_status** to reflect current implementation state
-3. **Update CHAT_CONTEXT.md** when major milestones are reached
-4. **Document design decisions** and architectural choices
-5. **Update README.md** when new capabilities are available
-
-**Progress Tracking:**
-- Use checkboxes in the phase lists to track completion
-- Add notes about implementation challenges and solutions
-- Keep success criteria updated as we learn more
-
 ## Files to Monitor During Development
 
 **Core Implementation:**
