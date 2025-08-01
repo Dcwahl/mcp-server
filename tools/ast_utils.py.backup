@@ -103,10 +103,6 @@ class CodeAnalyzer:
                     func_name = node.func.id
                 elif isinstance(node.func, ast.Attribute):
                     func_name = node.func.attr
-                elif isinstance(node.func, ast.Attribute) and hasattr(node.func, 'value'):
-                    # Handle module.function() calls
-                    if hasattr(node.func.value, 'id'):
-                        func_name = node.func.attr
                 
                 if func_name == target_function:
                     # Get the line content for context

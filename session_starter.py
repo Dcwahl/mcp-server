@@ -15,12 +15,14 @@ PROJECT_INFO = {
     "name": "MCP Development Server",
     "location": "/Users/diegowahl/mcp-server", 
     "description": "Comprehensive AI development toolkit with file ops, git integration, safety features",
-    "files": "1000+ Python files",
+    "files": "8 Python files in focused implementation",
+    "current_objective": "MAJOR REDESIGN: Moving to class-based tool registry system (see CURRENT_OBJECTIVE.md)",
     "key_features": [
         "Self-updating MCP server",
         "Safe file editing with backups", 
         "Git workflow with main branch protection",
-        "Modular tool architecture"
+        "AST-based code analysis tools",
+        "Planning class-based tool registry redesign"
     ]
 }
 

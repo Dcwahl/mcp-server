@@ -14,6 +14,10 @@ from tools.git_utils import (
 )
 from tools.command_utils import reinstall_mcp_server
 from tools.project_utils import list_all_tools, get_project_status, show_tool_usage_examples
+from tools.ast_utils import (
+    find_function_usages, get_function_signature, 
+    analyze_file_structure, get_project_overview
+)
 
 # Create an MCP server
 mcp = FastMCP("DevTools")
@@ -127,3 +131,25 @@ def git_push(branch: str = None) -> str:
 def git_checkout(branch_name: str, create_new: bool = False) -> str:
     """Checkout existing branch or create new branch if create_new=True"""
     return do_git_checkout(branch_name, create_new)
+
+
+# AST-based Code Analysis Tools
+@mcp.tool()
+def find_function_usages_tool(function_name: str) -> str:
+    """Find all usages of a function across the project"""
+    return find_function_usages(function_name)
+
+@mcp.tool()
+def get_function_signature_tool(function_name: str) -> str:
+    """Get the signature, location, and documentation of a function"""
+    return get_function_signature(function_name)
+
+@mcp.tool()
+def analyze_file_structure_tool(file_path: str) -> str:
+    """Analyze the structure of a specific file (imports, classes, functions)"""
+    return analyze_file_structure(file_path)
+
+@mcp.tool()
+def get_project_overview_tool() -> str:
+    """Get a high-level overview of the entire project structure"""
+    return get_project_overview()

@@ -133,23 +133,22 @@ def git_checkout(branch_name: str, create_new: bool = False) -> str:
     return do_git_checkout(branch_name, create_new)
 
 
-# AST-based Code Analysis Tools
 @mcp.tool()
-def find_function_usages_tool(function_name: str) -> str:
+def find_function_usages_tool(function_name: str, project_root: str = "/Users/diegowahl/mcp-server") -> str:
     """Find all usages of a function across the project"""
-    return find_function_usages(function_name)
+    return find_function_usages(function_name, project_root)
 
 @mcp.tool()
-def get_function_signature_tool(function_name: str) -> str:
+def get_function_signature_tool(function_name: str, project_root: str = "/Users/diegowahl/mcp-server") -> str:
     """Get the signature, location, and documentation of a function"""
-    return get_function_signature(function_name)
+    return get_function_signature(function_name, project_root)
 
 @mcp.tool()
-def analyze_file_structure_tool(file_path: str) -> str:
+def analyze_file_structure_tool(file_path: str, project_root: str = "/Users/diegowahl/mcp-server") -> str:
     """Analyze the structure of a specific file (imports, classes, functions)"""
-    return analyze_file_structure(file_path)
+    return analyze_file_structure(file_path, project_root)
 
 @mcp.tool()
-def get_project_overview_tool() -> str:
+def get_project_overview_tool(project_root: str = "/Users/diegowahl/mcp-server") -> str:
     """Get a high-level overview of the entire project structure"""
-    return get_project_overview()
+    return get_project_overview(project_root)

@@ -28,6 +28,7 @@ git_status
 - Self-updating MCP server with comprehensive safety features
 - Full git workflow integration with main branch protection
 - Modular tool architecture in `tools/` directory
+- **MAJOR REDESIGN IN PROGRESS**: Moving to class-based tool registry (see `CURRENT_OBJECTIVE.md`)
 
 **Key Capabilities**:
 - Safe file editing with automatic backups

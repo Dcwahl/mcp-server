@@ -16,6 +16,15 @@ git_status      # Repository status
 - Current branch: main (protected from direct pushes)
 - Key feature: Self-updating server with comprehensive safety features
 
+## Current Development Focus
+
+**MAJOR ARCHITECTURAL REDESIGN** - Moving to class-based tool registry inspired by Serena:
+- Converting function-based tools to class-based `Tool` system
+- Implementing `ToolRegistry` for automatic discovery
+- Adding memory management for cross-session context
+- Creating caching strategy for performance
+- See `CURRENT_OBJECTIVE.md` for complete roadmap
+
 ## Development Patterns
 
 ### Safe File Editing
