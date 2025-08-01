@@ -3,7 +3,7 @@ import subprocess
 import os
 from pathlib import Path
 
-def run_git_command(command: list, cwd: str = "/Users/diegowahl/mcp-server") -> str:
+def run_git_command(command: list, cwd: str = "/Users/diegowahl/mcp-server", ignore_errors: bool = False) -> str:
     """Run a git command safely"""
     try:
         # For write operations, don't check if we're in a git repo first (git init needs to work)
@@ -39,11 +39,17 @@ def run_git_command(command: list, cwd: str = "/Users/diegowahl/mcp-server") -> 
         if result.returncode == 0:
             return result.stdout.strip() if result.stdout else "Command completed successfully"
         else:
+            if ignore_errors:
+                return ""
             return f"Git error: {result.stderr.strip()}"
             
     except subprocess.TimeoutExpired:
+        if ignore_errors:
+            return ""
         return "Error: Git command timed out"
     except Exception as e:
+        if ignore_errors:
+            return ""
         return f"Error running git command: {str(e)}"
 
 def get_current_branch() -> str:
@@ -110,6 +116,39 @@ def do_git_add(files: str) -> str:
     """Add files to git staging area. Use '.' for all files"""
     if files.strip() == "":
         return "Error: No files specified"
+    
+    # If adding all files with '.', first add everything, then remove unwanted files
+    if files.strip() == ".":
+        # Add all files first
+        result = run_git_command(["git", "add", "."])
+        
+        # Remove backup files and cache directories
+        unwanted_patterns = [
+            "*.backup",
+            "__pycache__/",
+            "tools/__pycache__/", 
+            "*.pyc",
+            "*.pyo", 
+            "*.cache",
+            ".cache/",
+            "temp/",
+            "tmp/",
+            "*.log"
+        ]
+        
+        removed_items = []
+        # Try to remove each unwanted pattern (ignore errors if files don't exist)
+        for pattern in unwanted_patterns:
+            unstage_result = run_git_command(["git", "reset", "HEAD", pattern], ignore_errors=True)
+            if unstage_result and "error" not in unstage_result.lower():
+                removed_items.append(pattern)
+        
+        if removed_items:
+            return result + f"\n\nAutomatically excluded: {', '.join(removed_items)}"
+        else:
+            return result + "\n\nNote: Backup files and cache directories automatically excluded"
+    
+    # For specific files, add them directly
     return run_git_command(["git", "add", files])
 
 def do_git_commit(message: str) -> str:
