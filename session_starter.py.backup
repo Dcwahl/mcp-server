@@ -27,8 +27,9 @@ PROJECT_INFO = {
 QUICK_REFERENCE = {
     "file_editing": "Use patch_file instead of write_file when possible",
     "git_workflow": "Create feature branches, main branch is protected", 
-    "server_updates": "Use reinstall_server after code changes",
-    "finding_code": "Use find_in_file and find_files for navigation"
+    "server_updates": "Use reinstall_server + hard restart Claude Desktop after code changes",
+    "finding_code": "Use find_in_file and find_files for navigation",
+    "new_tools": "After adding tools: reinstall_server → hard restart Claude → new chat session"
 }
 
 if __name__ == "__main__":

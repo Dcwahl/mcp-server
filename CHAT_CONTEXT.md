@@ -28,6 +28,7 @@ git_status
 - Self-updating MCP server with comprehensive safety features
 - Full git workflow integration with main branch protection
 - Modular tool architecture in `tools/` directory
+- **MAJOR REDESIGN IN PROGRESS**: Moving to class-based tool registry (see `CURRENT_OBJECTIVE.md`)
 
 **Key Capabilities**:
 - Safe file editing with automatic backups
@@ -36,6 +37,14 @@ git_status
 - Project introspection and status tracking
 
 ## Common Tasks & Workflows
+
+## Development Workflow
+
+**Important**: When working on the tool registry redesign:
+- **Update CURRENT_OBJECTIVE.md** with progress and checkboxes
+- **Update project_status** to reflect current state
+- **Document major design decisions** and architectural choices
+- **Keep context files current** so new chat sessions have accurate info
 
 ### Adding New Features
 1. Create feature branch: `git_checkout('feature/name', create_new=True)`
