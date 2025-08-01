@@ -33,12 +33,6 @@ def list_all_tools() -> str:
                 "reinstall_server": "Reinstall MCP server after changes",
                 "list_tools": "Show this tool inventory",
                 "project_status": "Get current project overview"
-            },
-            "Code Analysis": {
-                "find_function_usages_tool": "Find all usages of a function across the project",
-                "get_function_signature_tool": "Get function signature, location, and documentation",
-                "analyze_file_structure_tool": "Analyze file structure (imports, classes, functions)",
-                "get_project_overview_tool": "Get high-level overview of project structure"
             }
         }
         

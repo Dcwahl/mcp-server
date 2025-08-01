@@ -65,6 +65,22 @@ def reinstall_server() -> str:
     """Reinstall this MCP server (useful after making changes)"""
     return reinstall_mcp_server()
 
+# Project Introspection
+@mcp.tool()
+def list_tools() -> str:
+    """Show all available MCP tools with descriptions"""
+    return list_all_tools()
+
+@mcp.tool()
+def project_status() -> str:
+    """Get current project overview and status"""
+    return get_project_status()
+
+@mcp.tool()
+def show_examples() -> str:
+    """Show common tool usage patterns and examples"""
+    return show_tool_usage_examples()
+
 # Git Read Operations
 @mcp.tool()
 def git_status() -> str:
