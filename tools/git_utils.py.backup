@@ -6,25 +6,35 @@ from pathlib import Path
 def run_git_command(command: list, cwd: str = "/Users/diegowahl/mcp-server") -> str:
     """Run a git command safely"""
     try:
-        # Check if we're in a git repository
-        result = subprocess.run(
-            ["git", "rev-parse", "--git-dir"],
-            cwd=cwd,
-            capture_output=True,
-            text=True,
-            timeout=10
-        )
-        if result.returncode != 0:
-            return f"Error: Not in a git repository (checked {cwd})"
-        
-        # Run the actual command
-        result = subprocess.run(
-            command,
-            cwd=cwd,
-            capture_output=True,
-            text=True,
-            timeout=30
-        )
+        # For write operations, don't check if we're in a git repo first (git init needs to work)
+        if len(command) > 1 and command[1] == "init":
+            result = subprocess.run(
+                command,
+                cwd=cwd,
+                capture_output=True,
+                text=True,
+                timeout=30
+            )
+        else:
+            # Check if we're in a git repository for other commands
+            result = subprocess.run(
+                ["git", "rev-parse", "--git-dir"],
+                cwd=cwd,
+                capture_output=True,
+                text=True,
+                timeout=10
+            )
+            if result.returncode != 0:
+                return f"Error: Not in a git repository (checked {cwd})"
+            
+            # Run the actual command
+            result = subprocess.run(
+                command,
+                cwd=cwd,
+                capture_output=True,
+                text=True,
+                timeout=30
+            )
         
         if result.returncode == 0:
             return result.stdout.strip() if result.stdout else "Command completed successfully"
@@ -36,6 +46,7 @@ def run_git_command(command: list, cwd: str = "/Users/diegowahl/mcp-server") -> 
     except Exception as e:
         return f"Error running git command: {str(e)}"
 
+# Read-only operations
 def get_git_status() -> str:
     """Get the current git status"""
     result = run_git_command(["git", "status", "--porcelain", "-b"])
@@ -86,3 +97,41 @@ def get_git_log(limit: int = 10) -> str:
     """Get recent commit history"""
     command = ["git", "log", f"--max-count={limit}", "--oneline", "--graph", "--decorate"]
     return run_git_command(command)
+
+# Write operations
+def do_git_add(files: str) -> str:
+    """Add files to git staging area. Use '.' for all files"""
+    if files.strip() == "":
+        return "Error: No files specified"
+    return run_git_command(["git", "add", files])
+
+def do_git_commit(message: str) -> str:
+    """Commit staged changes with a message"""
+    if not message or len(message.strip()) < 5:
+        return "Error: Commit message must be at least 5 characters"
+    return run_git_command(["git", "commit", "-m", message])
+
+def do_git_push(branch: str = None) -> str:
+    """Push commits to remote. If branch specified, pushes that branch"""
+    if branch:
+        return run_git_command(["git", "push", "origin", branch])
+    else:
+        return run_git_command(["git", "push"])
+
+def do_git_checkout(branch_name: str, create_new: bool = False) -> str:
+    """Checkout existing branch or create new one"""
+    if not branch_name or len(branch_name.strip()) < 1:
+        return "Error: Branch name required"
+    
+    if create_new:
+        return run_git_command(["git", "checkout", "-b", branch_name])
+    else:
+        return run_git_command(["git", "checkout", branch_name])
+
+def get_git_diff() -> str:
+    """Show diff of unstaged changes"""
+    return run_git_command(["git", "diff"])
+
+def get_git_diff_staged() -> str:
+    """Show diff of staged changes"""
+    return run_git_command(["git", "diff", "--staged"])

@@ -3,11 +3,17 @@ MCP Development Server - Local development tools for Claude
 """
 
 from mcp.server.fastmcp import FastMCP
-from tools.io_utils import read_file_content, list_directory_contents, write_file_content, find_files_by_pattern
-from tools.git_utils import (
-    get_git_status, get_git_branch, get_git_log, git_add_files, 
-    git_commit, git_push, git_checkout_branch, git_diff, git_diff_staged
+from tools.io_utils import (
+    read_file_content, list_directory_contents, write_file_content, find_files_by_pattern,
+    patch_file as do_patch_file, append_to_file as do_append_file, 
+    find_in_file as do_find_in_file, read_file_lines
 )
+from tools.git_utils import (
+    get_git_status, get_git_branch, get_git_log, do_git_add, 
+    do_git_commit, do_git_push, do_git_checkout, get_git_diff, get_git_diff_staged
+)
+from tools.command_utils import reinstall_mcp_server
+from tools.project_utils import list_all_tools, get_project_status, show_tool_usage_examples
 
 # Create an MCP server
 mcp = FastMCP("DevTools")
@@ -17,6 +23,11 @@ mcp = FastMCP("DevTools")
 def read_file(file_path: str) -> str:
     """Read the contents of a file"""
     return read_file_content(file_path)
+
+@mcp.tool()
+def read_lines(file_path: str, start_line: int = None, end_line: int = None) -> str:
+    """Read specific line ranges from a file (1-indexed)"""
+    return read_file_lines(file_path, start_line, end_line)
 
 @mcp.tool()
 def list_directory(directory_path: str = ".") -> str:
@@ -29,9 +40,46 @@ def write_file(file_path: str, content: str) -> str:
     return write_file_content(file_path, content)
 
 @mcp.tool()
+def patch_file(file_path: str, old_text: str, new_text: str) -> str:
+    """Replace specific text in a file (find and replace) - safer than rewriting entire file"""
+    return do_patch_file(file_path, old_text, new_text)
+
+@mcp.tool()
+def append_file(file_path: str, content: str) -> str:
+    """Append content to the end of a file"""
+    return do_append_file(file_path, content)
+
+@mcp.tool()
+def find_in_file(file_path: str, pattern: str, context_lines: int = 3) -> str:
+    """Search for text in a file and return matches with context"""
+    return do_find_in_file(file_path, pattern, context_lines)
+
+@mcp.tool()
 def find_files(pattern: str, directory: str = ".") -> str:
     """Find files matching a pattern (e.g., '*.py', '*.js')"""
     return find_files_by_pattern(pattern, directory)
+
+# Command Operations
+@mcp.tool()
+def reinstall_server() -> str:
+    """Reinstall this MCP server (useful after making changes)"""
+    return reinstall_mcp_server()
+
+# Project Introspection
+@mcp.tool()
+def list_tools() -> str:
+    """Show all available MCP tools with descriptions"""
+    return list_all_tools()
+
+@mcp.tool()
+def project_status() -> str:
+    """Get current project overview and status"""
+    return get_project_status()
+
+@mcp.tool()
+def show_examples() -> str:
+    """Show common tool usage patterns and examples"""
+    return show_tool_usage_examples()
 
 # Git Read Operations
 @mcp.tool()
@@ -52,30 +100,30 @@ def git_log(limit: int = 10) -> str:
 @mcp.tool()
 def git_diff() -> str:
     """Show diff of unstaged changes"""
-    return git_diff()
+    return get_git_diff()
 
 @mcp.tool()
 def git_diff_staged() -> str:
     """Show diff of staged changes"""
-    return git_diff_staged()
+    return get_git_diff_staged()
 
 # Git Write Operations (use with caution)
 @mcp.tool()
 def git_add(files: str) -> str:
     """Add files to git staging area. Use '.' for all files"""
-    return git_add_files(files)
+    return do_git_add(files)
 
 @mcp.tool()
 def git_commit(message: str) -> str:
     """Commit staged changes with a message"""
-    return git_commit(message)
+    return do_git_commit(message)
 
 @mcp.tool()
 def git_push(branch: str = None) -> str:
     """Push commits to remote repository"""
-    return git_push(branch)
+    return do_git_push(branch)
 
 @mcp.tool()
 def git_checkout(branch_name: str, create_new: bool = False) -> str:
     """Checkout existing branch or create new branch if create_new=True"""
-    return git_checkout_branch(branch_name, create_new)
+    return do_git_checkout(branch_name, create_new)

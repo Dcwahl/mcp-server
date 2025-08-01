@@ -1,0 +1,100 @@
+# Development Guide
+
+## New Chat Session Setup
+
+**Essential Commands for Context**:
+```bash
+list_tools      # See all available MCP tools
+project_status  # Get current project state
+show_examples   # Common usage patterns  
+git_status      # Repository status
+```
+
+**Quick Project Overview**:
+- Location: `/Users/diegowahl/mcp-server`
+- Type: MCP Development Server with 1000+ Python files
+- Current branch: main (protected from direct pushes)
+- Key feature: Self-updating server with comprehensive safety features
+
+## Development Patterns
+
+### Safe File Editing
+```python
+# ✅ Preferred: patch_file (safer, creates backups)
+patch_file('server.py', 
+    old_text='old_function_name', 
+    new_text='new_function_name')
+
+# ⚠️ Use sparingly: write_file (overwrites entire file)
+# Only use when creating new files or major restructuring
+```
+
+### Git Workflow
+```python
+# 1. Create feature branch
+git_checkout('feature/new-tool', create_new=True)
+
+# 2. Make changes using MCP tools
+patch_file('tools/io_utils.py', old_code, new_code)
+
+# 3. Test changes
+reinstall_server()  # Updates MCP registration
+
+# 4. Commit and push
+git_add('.')
+git_commit('Add new file operation tool')
+git_push()  # Safe - protected from pushing to main
+```
+
+### Adding New Tools
+
+1. **Add utility function** to appropriate `tools/*.py` file
+2. **Import in server.py** 
+3. **Add @mcp.tool() wrapper** with proper metadata
+4. **Test with reinstall_server**
+5. **Restart Claude Desktop** to pick up changes
+
+### Finding Code
+```python
+# Find specific patterns
+find_in_file('server.py', '@mcp.tool()', context_lines=2)
+
+# Find files by pattern
+find_files('**/*.py', '.')  # All Python files recursively
+find_files('tools/*.py', '.')  # Just tools directory
+```
+
+## Safety Features
+
+### File Protection
+- **Auto-backups**: All modifications create `.backup` files
+- **Protected files**: `pyproject.toml`, `uv.lock`, `.gitignore`, `.git/`, `__pycache__/`
+- **Ambiguity prevention**: `patch_file` fails if multiple matches found
+
+### Git Protection  
+- **Main branch protection**: Cannot push to `main`/`master` 
+- **Explicit operations**: All git commands require specific parameters
+- **Branch encouragement**: Promotes feature branch workflow
+
+## Troubleshooting
+
+### Server Not Updating
+1. Run `reinstall_server` 
+2. Restart Claude Desktop application
+3. Check for Python syntax errors in modified files
+
+### Git Issues
+- If stuck on main branch, create feature branch first
+- Use `git_status` to check current state
+- Protected files list prevents accidental modifications
+
+### File Operations
+- Use `read_lines` for large files instead of `read_file`
+- Check `.backup` files if changes go wrong
+- Use `find_in_file` to verify changes were applied correctly
+
+## Project Goals
+
+**Current**: Comprehensive MCP development environment with safety features
+**Next**: Multi-agent orchestration, model agnosticism, custom UI development
+**Vision**: Enterprise-ready development platform for AI-assisted coding workflows

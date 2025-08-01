@@ -7,7 +7,7 @@ def run_git_command(command: list, cwd: str = "/Users/diegowahl/mcp-server") -> 
     """Run a git command safely"""
     try:
         # For write operations, don't check if we're in a git repo first (git init needs to work)
-        if command[1] == "init":
+        if len(command) > 1 and command[1] == "init":
             result = subprocess.run(
                 command,
                 cwd=cwd,
@@ -45,6 +45,13 @@ def run_git_command(command: list, cwd: str = "/Users/diegowahl/mcp-server") -> 
         return "Error: Git command timed out"
     except Exception as e:
         return f"Error running git command: {str(e)}"
+
+def get_current_branch() -> str:
+    """Get the current git branch name"""
+    result = run_git_command(["git", "branch", "--show-current"])
+    if result.startswith("Error"):
+        return ""
+    return result.strip()
 
 # Read-only operations
 def get_git_status() -> str:
@@ -99,26 +106,39 @@ def get_git_log(limit: int = 10) -> str:
     return run_git_command(command)
 
 # Write operations
-def git_add_files(files: str) -> str:
+def do_git_add(files: str) -> str:
     """Add files to git staging area. Use '.' for all files"""
     if files.strip() == "":
         return "Error: No files specified"
     return run_git_command(["git", "add", files])
 
-def git_commit(message: str) -> str:
+def do_git_commit(message: str) -> str:
     """Commit staged changes with a message"""
     if not message or len(message.strip()) < 5:
         return "Error: Commit message must be at least 5 characters"
     return run_git_command(["git", "commit", "-m", message])
 
-def git_push(branch: str = None) -> str:
-    """Push commits to remote. If branch specified, pushes that branch"""
-    if branch:
-        return run_git_command(["git", "push", "origin", branch])
-    else:
+def do_git_push(branch: str = None) -> str:
+    """Push commits to remote. Blocks pushes to main branch for safety."""
+    # Get current branch if no branch specified
+    if branch is None:
+        current_branch = get_current_branch()
+        if not current_branch:
+            return "Error: Could not determine current branch"
+        
+        # Block pushing to main
+        if current_branch.lower() in ['main', 'master']:
+            return f"Error: Pushing to {current_branch} branch is blocked for safety. Please create a feature branch or specify a different branch explicitly."
+        
         return run_git_command(["git", "push"])
+    else:
+        # Block explicit pushes to main
+        if branch.lower() in ['main', 'master']:
+            return f"Error: Pushing to {branch} branch is blocked for safety. Use a feature branch instead."
+        
+        return run_git_command(["git", "push", "origin", branch])
 
-def git_checkout_branch(branch_name: str, create_new: bool = False) -> str:
+def do_git_checkout(branch_name: str, create_new: bool = False) -> str:
     """Checkout existing branch or create new one"""
     if not branch_name or len(branch_name.strip()) < 1:
         return "Error: Branch name required"
@@ -128,10 +148,10 @@ def git_checkout_branch(branch_name: str, create_new: bool = False) -> str:
     else:
         return run_git_command(["git", "checkout", branch_name])
 
-def git_diff() -> str:
+def get_git_diff() -> str:
     """Show diff of unstaged changes"""
     return run_git_command(["git", "diff"])
 
-def git_diff_staged() -> str:
+def get_git_diff_staged() -> str:
     """Show diff of staged changes"""
     return run_git_command(["git", "diff", "--staged"])
