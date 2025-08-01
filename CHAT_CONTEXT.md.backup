@@ -41,9 +41,7 @@ git_status
 1. Create feature branch: `git_checkout('feature/name', create_new=True)`
 2. Make changes with `patch_file` (safer than `write_file`)
 3. Test with `reinstall_server`
-4. **Hard restart Claude Desktop** (required for new tools to register)
-5. Start new chat session and run `list_tools` to verify
-6. Commit and push: `git_add('.')` → `git_commit('message')` → `git_push()`
+4. Commit and push: `git_add('.')` → `git_commit('message')` → `git_push()`
 
 ### File Operations
 - Use `patch_file` instead of `write_file` when possible

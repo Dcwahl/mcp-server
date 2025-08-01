@@ -91,7 +91,8 @@ Use the `reinstall_server` tool from within your AI assistant
 # 2. Import in server.py
 # 3. Add @mcp.tool() wrapper
 # 4. Use reinstall_server tool
-# 5. Restart Claude Desktop
+# 5. Hard restart Claude Desktop (critical!)
+# 6. Start new chat session to verify tools appear
 ```
 
 ### Safe development workflow
